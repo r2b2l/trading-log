@@ -1,0 +1,156 @@
+<div class="p-6 space-y-6 bg-slate-950 text-slate-100 min-h-screen">
+
+  <!-- En-tête de la page -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight">Historique des Trades</h1>
+      <p class="text-sm text-slate-400">Consulte, filtre et gère l'ensemble de tes positions enregistrées.</p>
+    </div>
+
+    <!-- Bouton d'action rapide -->
+    <button routerLink="/trades/new"
+      class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2.5 rounded-xl text-sm transition flex items-center gap-2 shadow-sm">
+      <span>➕</span>
+      <span>Nouveau Trade</span>
+    </button>
+  </div>
+
+  <!-- Barre de filtres -->
+  <div
+    class="flex flex-col sm:flex-row gap-4 justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
+
+    <!-- Filtre par recherche / paire -->
+    <div class="w-full sm:w-72">
+      <input type="text" placeholder="Rechercher une paire (ex: BTC/USDT)..." [value]="searchQuery()"
+        (input)="searchQuery.set($any($event.target).value)"
+        class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500" />
+    </div>
+
+    <!-- Filtre par Mode de trading -->
+    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+      <button (click)="selectedMode.set('all')" [class.bg-blue-600]="selectedMode() === 'all'"
+        [class.text-white]="selectedMode() === 'all'" [class.bg-slate-800]="selectedMode() !== 'all'"
+        [class.text-slate-400]="selectedMode() !== 'all'"
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+        Tous
+      </button>
+
+      <button (click)="selectedMode.set('paper')" [class.bg-blue-600]="selectedMode() === 'paper'"
+        [class.text-white]="selectedMode() === 'paper'" [class.bg-slate-800]="selectedMode() !== 'paper'"
+        [class.text-slate-400]="selectedMode() !== 'paper'"
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+        Paper
+      </button>
+
+      <button (click)="selectedMode.set('real')" [class.bg-blue-600]="selectedMode() === 'real'"
+        [class.text-white]="selectedMode() === 'real'" [class.bg-slate-800]="selectedMode() !== 'real'"
+        [class.text-slate-400]="selectedMode() !== 'real'"
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+        Réel
+      </button>
+
+      <button (click)="selectedMode.set('test')" [class.bg-blue-600]="selectedMode() === 'test'"
+        [class.text-white]="selectedMode() === 'test'" [class.bg-slate-800]="selectedMode() !== 'test'"
+        [class.text-slate-400]="selectedMode() !== 'test'"
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+        Test
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Tableau des Trades -->
+  <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm text-slate-300">
+
+        <!-- En-têtes du tableau -->
+        <thead class="bg-slate-950/80 text-xs text-slate-400 uppercase tracking-wider border-b border-slate-800">
+          <tr>
+            <th scope="col" class="px-6 py-4">Date</th>
+            <th scope="col" class="px-6 py-4">Paire</th>
+            <th scope="col" class="px-6 py-4">Mode</th>
+            <th scope="col" class="px-6 py-4">Prix Entrée</th>
+            <th scope="col" class="px-6 py-4">Prix Sortie</th>
+            <th scope="col" class="px-6 py-4">PnL ($)</th>
+            <th scope="col" class="px-6 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+
+        <!-- Corps du tableau -->
+        <tbody class="divide-y divide-slate-800/60">
+          @for (trade of filteredTrades(); track trade.id) {
+          <tr class="hover:bg-slate-800/40 transition">
+
+            <!-- Date -->
+            <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-400">
+              {{ trade.date | date:'dd/MM/yyyy HH:mm' }}
+            </td>
+
+            <!-- Paire -->
+            <td class="px-6 py-4 whitespace-nowrap font-bold text-slate-100">
+              {{ trade.pair }}
+            </td>
+
+            <!-- Mode Badge -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span [ngClass]="{
+                    'bg-blue-500/10 text-blue-400 border-blue-500/20': trade.mode === 'paper',
+                    'bg-emerald-500/10 text-emerald-400 border-emerald-500/20': trade.mode === 'real',
+                    'bg-purple-500/10 text-purple-400 border-purple-500/20': trade.mode === 'test',
+                    'bg-amber-500/10 text-amber-400 border-amber-500/20': trade.mode === 'incognito'
+                  }" class="px-2.5 py-1 rounded-md text-xs font-semibold border capitalize">
+                {{ trade.mode }}
+              </span>
+            </td>
+
+            <!--Prix d'entrée -->
+            <td class="px-6 py-4 whitespace-nowrap font-mono text-slate-300">
+              {{ trade.entryPrice | number:'1.2-2' }} $
+            </td>
+
+            <!-- Prix de sortie -->
+            <td class="px-6 py-4 whitespace-nowrap font-mono text-slate-300">
+              {{ trade.exitPrice ? (trade.exitPrice | number:'1.2-2') + ' $' : '-' }}
+            </td>
+
+            <!-- PnL -->
+            <td class="px-6 py-4 whitespace-nowrap font-bold font-mono">
+              @if (trade.pnl !== undefined && trade.pnl !== null) {
+              <span [class.text-emerald-400]="trade.pnl > 0" [class.text-rose-400]="trade.pnl < 0"
+                [class.text-slate-400]="trade.pnl === 0">
+                {{ trade.pnl > 0 ? '+' : '' }}{{ trade.pnl | number:'1.2-2' }} $
+              </span>
+              } @else {
+              <span class="text-slate-500 font-normal">En cours</span>
+              }
+            </td>
+
+            <!-- Actions -->
+            <td class="px-6 py-4 whitespace-nowrap text-right space-x-3 text-xs">
+              <a 
+                [routerLink]="['/trades/edit', trade.id]"
+                class="text-blue-400 hover:text-blue-300 hover:underline font-medium transition">
+                Modifier
+              </a>
+              <button (click)="deleteTrade(trade.id)"
+                class="text-rose-400 hover:text-rose-300 hover:underline font-medium transition">
+                Supprimer
+              </button>
+            </td>
+
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="7" class="px-6 py-12 text-center text-slate-500">
+              Aucun trade ne correspond aux critères sélectionnés.
+            </td>
+          </tr>
+          }
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+</div>

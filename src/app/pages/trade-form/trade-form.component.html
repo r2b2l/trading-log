@@ -1,0 +1,133 @@
+<div class="p-6 max-w-3xl mx-auto space-y-6 bg-slate-950 text-slate-100 min-h-screen">
+  
+  <!-- En-tête  -->
+  <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight">{{ isEditMode() ? 'Modifier le Trade' : 'Ajouter un Trade' }}</h1>
+      <p class="text-sm text-slate-400">
+        {{ isEditMode() ? 'Mets à jour les informations de ta position.' : 'Enregistre une nouvelle position dans ton journal.' }}
+      </p>
+    </div>
+    <button 
+      routerLink="/trades"
+      class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-medium transition">
+      ← Retour à la liste
+    </button>
+  </div>
+
+  <!-- Formulaire -->
+  <form (submit)="saveTrade($event)" class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-6 shadow-sm">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Paire -->
+      <div class="space-y-2">
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Paire / Actif *</label>
+        <input 
+          type="text" 
+          [(ngModel)]="pair" 
+          name="pair" 
+          required
+          placeholder="ex: BTC/USDT, AAPL" 
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+
+      <!-- Mode de trading -->
+      <div class="space-y-2">
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Mode *</label>
+        <select 
+          [(ngModel)]="mode" 
+          name="mode" 
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+          <option value="paper">Paper Trading</option>
+          <option value="real">Réel</option>
+          <option value="test">Test</option>
+          <option value="incognito">Incognito</option>
+        </select>
+      </div>
+
+      <!-- Prix d'entrée -->
+      <div class="space-y-2">
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Prix d'entrée *</label>
+        <input 
+          type="number" 
+          step="any"
+          [(ngModel)]="entryPrice" 
+          name="entryPrice" 
+          required
+          placeholder="0.00" 
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+
+      <!-- Prix de sortie -->
+      <div class="space-y-2">
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Prix de sortie (Optionnel)</label>
+        <input 
+          type="number" 
+          step="any"
+          [(ngModel)]="exitPrice" 
+          name="exitPrice" 
+          placeholder="0.00" 
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+
+      <!-- Date et Heure -->
+      <div class="space-y-2 md:col-span-2">
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Date & Heure *</label>
+        <input 
+          type="datetime-local" 
+          [(ngModel)]="date" 
+          name="date" 
+          required
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+
+      <!-- PnL (Optionnel ou calculé) -->
+      <div class="space-y-2 md:col-span-2">
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">PnL Net ($)</label>
+        <input 
+          type="number" 
+          step="any"
+          [(ngModel)]="pnl" 
+          name="pnl" 
+          placeholder="ex: +142.50 ou -50.00" 
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+
+      <!-- Notes -->
+      <div class="space-y-2 md:col-span-2">
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Notes & Analyse</label>
+        <textarea 
+          [(ngModel)]="notes" 
+          name="notes" 
+          rows="3"
+          placeholder="Raisons de l'entrée, émotions, erreurs commises..."
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-blue-500 resize-none">
+        </textarea>
+      </div>
+
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
+      <button 
+        type="button" 
+        routerLink="/trades"
+        class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-medium transition">
+        Annuler
+      </button>
+      <button 
+        type="submit"
+        class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-medium transition shadow-sm">
+        {{ isEditMode() ? 'Mettre à jour' : 'Enregistrer le trade' }}
+      </button>
+    </div>
+
+  </form>
+
+</div>

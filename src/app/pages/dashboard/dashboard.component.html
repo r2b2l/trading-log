@@ -1,0 +1,104 @@
+<div class="p-6 space-y-6 bg-slate-950 text-slate-100 min-h-screen">
+  
+  <!-- En-tête & Contrôles globaux -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight">Trading Dashboard</h1>
+      <p class="text-sm text-slate-400">Vue d'ensemble de tes performances et de ton capital.</p>
+    </div>
+
+    <!-- Bouton mode incognito toggle -->
+    <button 
+      (click)="toggleIncognito()"
+      [class.bg-purple-600]="isIncognito()"
+      [class.bg-slate-800]="!isIncognito()"
+      class="px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 border border-slate-700">
+      <span>🕶️ Mode Incognito</span>
+      <span class="text-xs px-2 py-0.5 rounded" [class.bg-purple-800]="isIncognito()" [class.bg-slate-700]="!isIncognito()">
+        {{ isIncognito() ? 'ON' : 'OFF' }}
+      </span>
+    </button>
+  </div>
+
+  <!-- Bloc KPI Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    
+    <!-- PnL Net Global -->
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-1 shadow-sm">
+      <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">PnL Net Total</span>
+      <div class="text-2xl font-extrabold" [ngClass]="totalPnl() >= 0 ? 'text-emerald-400' : 'text-rose-400'" [class.blur-sm]="isIncognito()">
+        {{ totalPnl() | currency }}
+      </div>
+      <span class="text-xs text-slate-500">+12.4% ce mois-ci (KPI a definir)</span>
+    </div>
+
+    <!-- Win Rate -->
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-1 shadow-sm">
+      <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Taux de Réussite (Win Rate)</span>
+      <div class="text-2xl font-extrabold text-blue-400" [class.blur-sm]="isIncognito()">
+        {{ winRate() }} %
+      </div>
+      <span class="text-xs text-slate-500">{{ winningTradesCount() }} gagnants / {{ losingTradesCount() }} perdants</span>
+    </div>
+
+    <!-- Profit Factor -->
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-1 shadow-sm">
+      <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Profit Factor</span>
+      <div class="text-2xl font-extrabold text-indigo-400" [class.blur-sm]="isIncognito()">
+        {{ profitFactor() }}
+      </div>
+      <span class="text-xs text-slate-500">Gains totaux / Pertes totales</span>
+    </div>
+
+    <!-- Nombre de Trades -->
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-1 shadow-sm">
+      <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Trades</span>
+      <div class="text-2xl font-extrabold text-slate-200">
+        {{ trades().length }}
+      </div>
+      <span class="text-xs text-slate-500">Tous modes confondus</span>
+    </div>
+
+  </div>
+
+  <!-- Section Graphique & Derniers Trades -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- Graphique (2 colonnes) -->
+    <div class="lg:col-span-2 bg-slate-900 border border-slate-800 p-6 rounded-xl flex flex-col justify-between">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-semibold text-lg">Courbe de Performance (Equity Curve)</h3>
+        <span class="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded">Temps réel</span>
+      </div>
+      <div class="h-64 flex items-center justify-center border border-dashed border-slate-800 rounded-lg text-slate-500 text-sm">
+        [Intégration du graphique d'évolution PnL ici]
+      </div>
+    </div>
+
+    <!-- Derniers Trades (1 colonne) -->
+    <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl space-y-4">
+      <h3 class="font-semibold text-lg">Derniers Trades</h3>
+      <a routerLink="/trades" class="text-xs text-indigo-400 hover:underline">Voir tout</a>
+      <div class="space-y-3">
+        @for (trade of recentTrades(); track trade.id) {
+          <div class="flex justify-between items-center p-3 bg-slate-950 rounded-lg border border-slate-800/60">
+            <div>
+              <div class="font-bold text-sm text-white">{{ trade.pair }}</div>
+              <div class="text-xs text-slate-400">{{ trade.date | date:'shortDate' }}</div>
+            </div>
+            <div class="text-right" [class.blur-sm]="isIncognito()">
+              <div class="font-semibold text-sm" [ngClass]="(trade.pnl ?? 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+                {{ trade.pnl !== undefined && trade.pnl !== null ? (trade.pnl | currency) : 'En cours' }}
+              </div>
+              <div class="text-xs text-slate-400">{{ trade.mode }}</div>
+            </div>
+          </div>
+        } @empty {
+          <p class="text-slate-500 text-xs text-center py-6">Aucun trade enregistré pour le moment.</p>
+        }
+      </div>
+    </div>
+
+  </div>
+
+</div>

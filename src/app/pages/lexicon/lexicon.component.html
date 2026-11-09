@@ -1,0 +1,88 @@
+<div class="p-6 space-y-6 bg-slate-950 text-slate-100 min-h-screen">
+  
+  <!-- En-tête de la page -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight">Lexique & Setups de Trading</h1>
+      <p class="text-sm text-slate-400">Centralise tes définitions, tes patterns techniques et tes règles de setup.</p>
+    </div>
+
+    <!-- Bouton d'ajout -->
+    <button 
+      class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2.5 rounded-xl text-sm transition flex items-center gap-2 shadow-sm">
+      <span>➕</span>
+      <span>Ajouter une entrée</span>
+    </button>
+  </div>
+
+  <!-- Barre de recherche et filtres par catégorie -->
+  <div class="flex flex-col sm:flex-row gap-4 justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
+    
+    <!-- Input de recherche -->
+    <div class="w-full sm:w-80">
+      <input 
+        type="text" 
+        placeholder="Rechercher un terme, un setup..." 
+        class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500"
+      />
+    </div>
+
+    <!-- Filtres par onglets / catégories -->
+    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+      <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition">Tout</button>
+      <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition">Setups</button>
+      <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition">Patterns</button>
+      <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition">Vocabulaire</button>
+      <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition">Mindset</button>
+    </div>
+
+  </div>
+
+  <!-- Grille des fiches Lexique / Setups -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    
+    <!-- Carte d'exemple : Setup -->
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-3 shadow-sm flex flex-col justify-between">
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-base text-slate-100">Liquidity Sweep & Retest</span>
+          <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Setup</span>
+        </div>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          Attendre la prise de liquidité au-dessus d'un ancien high/low (Asian range ou Previous Day), puis chercher une cassure de structure en M5 avec un retest de l'Order Block.
+        </p>
+      </div>
+
+      <div class="pt-4 border-t border-slate-800/60 flex justify-between items-center text-xs text-slate-500">
+        <span>Mis à jour le 04 Nov</span>
+        <div class="flex gap-3">
+          <button class="text-blue-400 hover:underline">Modifier</button>
+          <button class="text-rose-400 hover:underline">Supprimer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carte d'exemple : Vocabulaire -->
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-3 shadow-sm flex flex-col justify-between">
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-base text-slate-100">Order Block (OB)</span>
+          <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Vocabulaire</span>
+        </div>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          Dernière bougie opposée avant un mouvement impulsif fort qui a cassé une structure de marché (BOS). Zone institutionnelle d'intérêt pour un retest.
+        </p>
+      </div>
+
+      <div class="pt-4 border-t border-slate-800/60 flex justify-between items-center text-xs text-slate-500">
+        <span>Mis à jour le 02 Nov</span>
+        <div class="flex gap-3">
+          <button class="text-blue-400 hover:underline">Modifier</button>
+          <button class="text-rose-400 hover:underline">Supprimer</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

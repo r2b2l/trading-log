@@ -1,12 +1,11 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { LayoutComponent } from './components/layout/layout.component';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
+  imports: [LayoutComponent],
+  standalone: true,
   styleUrl: './app.css',
   templateUrl: './app.html',
 })
-export class App {
-  protected readonly title = signal('trading-log');
-}
+export class App {}

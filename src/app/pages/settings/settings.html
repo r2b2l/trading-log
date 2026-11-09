@@ -1,13 +1,80 @@
-<div class="p-6 space-y-6">
-  <h1 class="text-2xl font-bold text-white">Paramètres et Sauvegarde</h1>
+<div class="p-6 space-y-6 bg-slate-950 text-slate-100 min-h-screen">
   
-  <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-4">
-    <h2 class="text-lg font-medium text-white">Exporter les données</h2>
-    <p class="text-sm text-slate-400">Télécharge une copie de sauvegarde de tous tes trades au format JSON.</p>
-    <button 
-      (click)="exportDatabase()"
-      class="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-500 transition-colors">
-      Télécharger le fichier JSON
-    </button>
+  <div class="max-w-4xl mx-auto space-y-6">
+    <!-- En-tête -->
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight">Paramètres & Données</h1>
+      <p class="text-sm text-slate-400">Gère tes sauvegardes et l'importation de ta base de données locale.</p>
+    </div>
+
+    <!-- Message de statut -->
+    @if (statusMessage(); as msg) {
+      <div 
+        class="p-4 rounded-lg border text-sm font-medium"
+        [ngClass]="msg.isError ? 'bg-rose-950/80 border-rose-800 text-rose-300' : 'bg-emerald-950/80 border-emerald-800 text-emerald-300'">
+        {{ msg.text }}
+      </div>
+    }
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Carte Export -->
+      <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl space-y-4 shadow-sm flex flex-col justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">💾</span>
+            <h2 class="font-semibold text-lg">Exporter la base</h2>
+          </div>
+          <p class="text-xs text-slate-400">
+            Télécharge l'intégralité de tes trades et réglages dans un fichier JSON réutilisable ou archivable.
+          </p>
+        </div>
+
+        <button 
+          (click)="exportData()"
+          [disabled]="isExporting()"
+          class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-medium text-sm rounded-lg transition shadow-sm flex items-center justify-center gap-2 cursor-pointer">
+          @if (isExporting()) {
+            <span>Exportation en cours...</span>
+          } @else {
+            <span>Télécharger la sauvegarde (.json)</span>
+          }
+        </button>
+      </div>
+
+      <!-- Carte Import -->
+      <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl space-y-4 shadow-sm flex flex-col justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">📥</span>
+            <h2 class="font-semibold text-lg">Importer une base</h2>
+          </div>
+          <p class="text-xs text-slate-400">
+            Restaure tes données depuis un fichier JSON de sauvegarde. Attention, cela écrasera la base actuelle.
+          </p>
+        </div>
+
+        <div>
+          <label 
+            for="json-upload" 
+            class="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm rounded-lg border border-slate-700 transition shadow-sm flex items-center justify-center gap-2 cursor-pointer">
+            @if (isImporting()) {
+              <span>Importation en cours...</span>
+            } @else {
+              <span>Sélectionner un fichier JSON</span>
+            }
+          </label>
+          <input 
+            id="json-upload" 
+            type="file" 
+            accept=".json" 
+            (change)="onFileSelected($event)" 
+            class="hidden" 
+            [disabled]="isImporting()" />
+        </div>
+      </div>
+
+    </div>
   </div>
+
 </div>

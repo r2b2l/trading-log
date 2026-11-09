@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppDatabase } from '../../services/app-database.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-lexicon',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './lexicon.component.html'
 })
 export class LexiconComponent {

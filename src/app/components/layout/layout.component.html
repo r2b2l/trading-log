@@ -1,24 +1,23 @@
 <div class="flex h-screen bg-slate-950 text-slate-100 overflow-hidden">
-  
+
   <!-- Sidebar rétractable -->
-  <aside 
-    [ngClass]="isCollapsed() ? 'w-20' : 'w-64'"
+  <aside [ngClass]="isCollapsed() ? 'w-20' : 'w-64'"
     class="bg-slate-900 border-r border-slate-800 flex flex-col justify-between transition-all duration-300 ease-in-out hidden md:flex relative">
-    
+
     <!-- En-tête de la Sidebar & Bouton de repli -->
     <div class="p-5 border-b border-slate-800 flex items-center justify-between">
       @if (!isCollapsed()) {
-        <div>
-          <h1 class="text-xl font-extrabold tracking-wider text-blue-400">TRADING<span class="text-slate-100">LOG</span></h1>
-          <p class="text-xs text-slate-500 mt-0.5">Paper Trading</p>
-        </div>
+      <div>
+        <h1 class="text-xl font-extrabold tracking-wider text-blue-400">TRADING<span class="text-slate-100">LOG</span>
+        </h1>
+        <p class="text-xs text-slate-500 mt-0.5">Paper Trading</p>
+      </div>
       } @else {
-        <span class="text-xl font-extrabold text-blue-400 mx-auto">TL</span>
+      <span class="text-xl font-extrabold text-blue-400 mx-auto">TL</span>
       }
 
       <!-- Bouton toggle collapse -->
-      <button 
-        (click)="toggleSidebar()"
+      <button (click)="toggleSidebar()"
         class="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition"
         [title]="isCollapsed() ? 'Agrandir la sidebar' : 'Réduire la sidebar'">
         <span>{{ isCollapsed() ? '➡️' : '⬅️' }}</span>
@@ -27,48 +26,48 @@
 
     <!-- Liens de navigation -->
     <nav class="flex-1 px-3 py-6 space-y-1.5">
-      <a 
-        routerLink="/" 
-        routerLinkActive="bg-blue-600/10 text-blue-400 border-blue-500/50" 
+      <a routerLink="/" routerLinkActive="bg-blue-600/10 text-blue-400 border-blue-500/50"
         [routerLinkActiveOptions]="{ exact: true }"
         class="flex items-center gap-3 px-3.5 py-3 rounded-xl font-medium text-slate-300 hover:bg-slate-800/60 transition border border-transparent"
         [title]="isCollapsed() ? 'Dashboard' : ''">
         <span class="text-lg">📊</span>
         @if (!isCollapsed()) {
-          <span class="text-sm">Dashboard</span>
+        <span class="text-sm">Dashboard</span>
         }
       </a>
 
-      <a 
-        routerLink="/trades" 
-        routerLinkActive="bg-blue-600/10 text-blue-400 border-blue-500/50"
+      <a routerLink="/trades" routerLinkActive="bg-blue-600/10 text-blue-400 border-blue-500/50"
         class="flex items-center gap-3 px-3.5 py-3 rounded-xl font-medium text-slate-300 hover:bg-slate-800/60 transition border border-transparent"
         [title]="isCollapsed() ? 'Trades' : ''">
         <span class="text-lg">📝</span>
         @if (!isCollapsed()) {
-          <span class="text-sm">Trades</span>
+        <span class="text-sm">Trades</span>
         }
       </a>
 
-      <a 
-        routerLink="/watchlist" 
-        routerLinkActive="bg-blue-600/10 text-blue-400 border-blue-500/50"
+      <a routerLink="/watchlist" routerLinkActive="bg-blue-600/10 text-blue-400 border-blue-500/50"
         class="flex items-center gap-3 px-3.5 py-3 rounded-xl font-medium text-slate-300 hover:bg-slate-800/60 transition border border-transparent"
         [title]="isCollapsed() ? 'Watchlist' : ''">
         <span class="text-lg">⭐</span>
         @if (!isCollapsed()) {
-          <span class="text-sm">Watchlist</span>
+        <span class="text-sm">Watchlist</span>
         }
       </a>
 
-      <a 
-        routerLink="/lexicon" 
-        routerLinkActive="bg-blue-600/10 text-blue-400 border-blue-500/50"
+      <a routerLink="/lexicon" routerLinkActive="bg-blue-600/10 text-blue-400 border-blue-500/50"
         class="flex items-center gap-3 px-3.5 py-3 rounded-xl font-medium text-slate-300 hover:bg-slate-800/60 transition border border-transparent"
         [title]="isCollapsed() ? 'Lexique & Setups' : ''">
         <span class="text-lg">📚</span>
         @if (!isCollapsed()) {
-          <span class="text-sm">Lexique & Setups</span>
+        <span class="text-sm">Lexique & Setups</span>
+        }
+      </a>
+
+      <a routerLink="/settings" routerLinkActive="text-indigo-400"
+        class="flex items-center gap-3 px-3.5 py-3 rounded-xl font-medium text-slate-300 hover:bg-slate-800/60 transition border border-transparent"
+        [title]="isCollapsed() ? 'Paramètres' : ''">
+        @if (!isCollapsed()) {
+        <span>⚙️</span> Paramètres
         }
       </a>
     </nav>
@@ -76,19 +75,19 @@
     <!-- Pied de la Sidebar -->
     <div class="p-4 border-t border-slate-800 text-xs text-slate-500 flex items-center justify-center">
       @if (!isCollapsed()) {
-        <div class="flex items-center justify-between w-full">
-          <span>Mode Local</span>
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        </div>
+      <div class="flex items-center justify-between w-full">
+        <span>Mode Local</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+      </div>
       } @else {
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500" title="Mode Local actif"></span>
+      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500" title="Mode Local actif"></span>
       }
     </div>
   </aside>
 
   <!-- Zone de contenu principale -->
   <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-    
+
     <!-- Topbar mobile / Header -->
     <header class="h-16 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-6 md:hidden">
       <span class="font-bold text-blue-400">TRADINGLOG</span>

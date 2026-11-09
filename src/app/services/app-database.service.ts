@@ -1,6 +1,5 @@
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import Dexie, { Table } from 'dexie';
-// import { exportDB } from 'dexie-export-import';
 
 import { Trade } from '../models/trade.model';
 import { Setup } from '../models/setup.model';
@@ -30,11 +29,11 @@ export class AppDatabase extends Dexie {
     // On ne configure la base que si on est dans le navigateur pour éviter les erreurs SSR
     if (isPlatformBrowser(this.platformId)) {
       // Schema and indexing definition (++id = auto-increment primary key)
-      this.version(2).stores({
-        trades: 'id, pair, date, mode, setupId, groupId, isBacktest',
+      this.version(3).stores({
+        trades: 'id, pair, date, entryPrice, exitPrice, mode, setupId, groupId, isBacktest',
         setups: 'id, name',
         tradeGroups: 'id, name',
-        lexicon: 'id, category, title',
+        lexicon: 'id, category, title, content, images, updatedAt',
         watchlist: 'id, pair, status',
         dividends: 'id, asset, paymentDate',
         pairNotes: 'id, pair, date'
@@ -49,11 +48,15 @@ export class AppDatabase extends Dexie {
     return await this.trades.toArray();
   }
 
-  // Méthode sécurisée pour l'export
-  async exportDb(): Promise<Blob | null> {
+  public async exportDatabaseBlob(): Promise<Blob | null> {
     if (!isPlatformBrowser(this.platformId)) return null;
+    const { exportDB } = await import('dexie-export-import');
+    return await exportDB(this);
+  }
 
-    await import('dexie-export-import');
-    return await this.export();
+  public async importDatabaseBlob(file: File): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const { importInto } = await import('dexie-export-import');
+    await importInto(this, file, { clearTablesBeforeImport: true });
   }
 }

@@ -5,6 +5,6 @@ export interface LexiconItem {
   title: string;
   category: LexiconCategory;
   content: string;            // Text explanation
-  diagramUrl?: string;        // Schema / image reference
+  images?: Blob[];        // Schema / image reference
   updatedAt: string;
 }

@@ -16,6 +16,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/watchlist/watchlist.component').then(m => m.WatchlistComponent),
   },
   {
+    path: 'lexicon/new',
+    loadComponent: () => import('./pages/lexicon-form/lexicon-form.component').then(m => m.LexiconFormComponent)
+  },
+  {
     path: 'lexicon',
     loadComponent: () => import('./pages/lexicon/lexicon.component').then(m => m.LexiconComponent),
   },
@@ -30,6 +34,10 @@ export const routes: Routes = [
   {
     path: 'trades',
     loadComponent: () => import('./pages/trades-list/trades-list.component').then(m => m.TradesListComponent),
+  },
+  {
+    path: 'settings',
+    loadComponent: () => import('./pages/settings/settings').then(m => m.SettingsComponent)
   },
   
   // Exemple pour d'autres pages futures

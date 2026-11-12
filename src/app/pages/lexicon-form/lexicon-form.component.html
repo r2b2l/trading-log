@@ -1,7 +1,8 @@
 <div class="max-w-3xl mx-auto p-6 bg-slate-900 border border-slate-800 rounded-xl text-slate-100 space-y-6 shadow-md">
   <div>
     <h2 class="text-xl font-bold tracking-tight">Ajouter un Setup / Élément du Lexique</h2>
-    <p class="text-xs text-slate-400 mt-0.5">Enregistre tes notes, stratégies et captures d'écran binaires (Blobs).</p>
+    <p class="text-xs text-slate-400 mt-0.5">Enregistres tes notes, stratégies et images pour illustrer le tout.</p>
+    <p class="text-xs text-slate-400 mt-0.5">Utilise <code>[[image_1]]</code>, <code>[[image_2]]</code> dans ta description pour placer tes images.</p>
   </div>
 
   <div class="space-y-4">
@@ -28,31 +29,38 @@
     <div>
       <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Description /
         Règles</label>
-      <textarea [(ngModel)]="description" rows="5" placeholder="Détails du setup, conditions d'invalidation..."
+      <textarea [(ngModel)]="description" rows="6" placeholder="Détails du setup, conditions d'invalidation..."
         class="w-full bg-slate-950 border border-slate-800 rounded-lg p-4 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"></textarea>
     </div>
 
-    <!-- Upload d'images (Blobs) -->
+    <!-- Upload d'images avec badges de shortcode -->
     <div class="space-y-2">
-      <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Captures d'écran (Stockage
-        Blob)</label>
-
-      <input type="file" multiple accept="image/*" (change)="onFilesSelected($event)"
+      <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Captures d'écran</label>
+      
+      <input 
+        type="file" 
+        multiple 
+        accept="image/*" 
+        (change)="onFilesSelected($event)" 
         class="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 cursor-pointer" />
 
-      <!-- Aperçu des images via createObjectURL -->
       @if (imagesPreview().length > 0) {
-      <div class="grid grid-cols-3 gap-3 mt-3">
-        @for (img of imagesPreview(); track $index) {
-        <div class="relative group bg-slate-950 border border-slate-800 rounded-lg p-2 flex flex-col items-center">
-          <img [src]="img.url" alt="Aperçu setup" class="h-24 w-full object-cover rounded-md mb-2" />
-          <button (click)="removeImage($index)"
-            class="absolute top-1 right-1 bg-rose-600/80 hover:bg-rose-600 text-white rounded-full p-1 text-xs transition cursor-pointer">
-            ✕
-          </button>
+        <div class="grid grid-cols-3 gap-3 mt-3">
+          @for (img of imagesPreview(); track $index) {
+            <div class="relative group bg-slate-950 border border-slate-800 rounded-lg p-2 flex flex-col items-center">
+              <!-- Badge du shortcode -->
+              <span class="absolute top-2 left-2 bg-indigo-600 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">
+                [[image_{{ $index + 1 }}]]
+              </span>
+              <img [src]="img.url" alt="Aperçu setup" class="h-24 w-full object-cover rounded-md mb-2 mt-2" />
+              <button 
+                (click)="removeImage($index)" 
+                class="absolute top-2 right-2 bg-rose-600/80 hover:bg-rose-600 text-white rounded-full p-1 text-xs transition cursor-pointer">
+                ✕
+              </button>
+            </div>
+          }
         </div>
-        }
-      </div>
       }
     </div>
 

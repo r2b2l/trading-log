@@ -10,7 +10,7 @@
     <!-- Bouton d'ajout -->
     <button 
       routerLink="/lexicon/new"
-      class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2.5 rounded-xl text-sm transition flex items-center gap-2 shadow-sm">
+      class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2.5 rounded-xl text-sm transition flex items-center gap-2 shadow-sm cursor-pointer">
       <span>➕</span>
       <span>Ajouter une entrée</span>
     </button>
@@ -18,8 +18,6 @@
 
   <!-- Barre de recherche et filtres par catégorie -->
   <div class="flex flex-col sm:flex-row gap-4 justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
-    
-    <!-- Input de recherche -->
     <div class="w-full sm:w-80">
       <input 
         type="text" 
@@ -28,62 +26,130 @@
       />
     </div>
 
-    <!-- Filtres par onglets / catégories -->
+    <!-- Filtres dynamiques -->
     <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-      <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition">Tout</button>
-      <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition">Setups</button>
-      <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition">Patterns</button>
-      <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition">Vocabulaire</button>
-      <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition">Mindset</button>
+      <button 
+        (click)="setCategory('all')"
+        [class]="selectedCategory() === 'all' ? 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition cursor-pointer' : 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer'">
+        Tout
+      </button>
+      <button 
+        (click)="setCategory('setup')"
+        [class]="selectedCategory() === 'setup' ? 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition cursor-pointer' : 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer'">
+        Setups
+      </button>
+      <button 
+        (click)="setCategory('pattern')"
+        [class]="selectedCategory() === 'pattern' ? 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition cursor-pointer' : 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer'">
+        Patterns
+      </button>
+      <button 
+        (click)="setCategory('vocabulary')"
+        [class]="selectedCategory() === 'vocabulary' ? 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition cursor-pointer' : 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer'">
+        Vocabulaire
+      </button>
+      <button 
+        (click)="setCategory('mindset')"
+        [class]="selectedCategory() === 'mindset' ? 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition cursor-pointer' : 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer'">
+        Mindset
+      </button>
     </div>
-
   </div>
 
-  <!-- Grille des fiches Lexique / Setups -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <!-- État de chargement / Liste vide -->
+  @if (isLoading()) {
+    <div class="text-center py-12 text-slate-400 text-sm">Chargement du lexique...</div>
+  } @else if (filteredItems().length === 0) {
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center space-y-3">
+      <p class="text-slate-400 text-sm">Aucun élément enregistré pour le moment.</p>
+      <a routerLink="/lexicon/new" class="inline-block text-blue-400 hover:underline text-sm font-medium">
+        Créer ta première fiche →
+      </a>
+    </div>
+  } @else {
     
-    <!-- Carte d'exemple : Setup -->
-    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-3 shadow-sm flex flex-col justify-between">
-      <div class="space-y-2">
-        <div class="flex justify-between items-center">
-          <span class="font-bold text-base text-slate-100">Liquidity Sweep & Retest</span>
-          <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Setup</span>
-        </div>
-        <p class="text-sm text-slate-400 leading-relaxed">
-          Attendre la prise de liquidité au-dessus d'un ancien high/low (Asian range ou Previous Day), puis chercher une cassure de structure en M5 avec un retest de l'Order Block.
-        </p>
-      </div>
+    <!-- Grille des fiches Lexique / Setups -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (item of filteredItems(); track item.id) {
+        <!-- Carte cliquable pour ouvrir la modale -->
+        <div 
+          (click)="openModal(item)"
+          class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-3 shadow-sm flex flex-col justify-between hover:border-blue-500/50 transition cursor-pointer group">
+          
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-base text-slate-100 group-hover:text-blue-400 transition">{{ item.title }}</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase">
+                {{ item.category }}
+              </span>
+            </div>
+            
+            <!-- Description tronquée sur la carte -->
+            <p class="text-sm text-slate-400 leading-relaxed line-clamp-3">
+              {{ item.content }}
+            </p>
+          </div>
 
-      <div class="pt-4 border-t border-slate-800/60 flex justify-between items-center text-xs text-slate-500">
-        <span>Mis à jour le 04 Nov</span>
-        <div class="flex gap-3">
-          <button class="text-blue-400 hover:underline">Modifier</button>
-          <button class="text-rose-400 hover:underline">Supprimer</button>
+          <div class="pt-4 border-t border-slate-800/60 flex justify-between items-center text-xs text-slate-500">
+            <span>{{ item.updatedAt | date:'dd MMM yyyy' }}</span>
+            <div class="flex gap-3" (click)="$event.stopPropagation()">
+              <button (click)="deleteItem(item.id, $event)" class="text-rose-400 hover:underline cursor-pointer">Supprimer</button>
+            </div>
+          </div>
         </div>
-      </div>
+      }
     </div>
 
-    <!-- Carte d'exemple : Vocabulaire -->
-    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-3 shadow-sm flex flex-col justify-between">
-      <div class="space-y-2">
-        <div class="flex justify-between items-center">
-          <span class="font-bold text-base text-slate-100">Order Block (OB)</span>
-          <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Vocabulaire</span>
-        </div>
-        <p class="text-sm text-slate-400 leading-relaxed">
-          Dernière bougie opposée avant un mouvement impulsif fort qui a cassé une structure de marché (BOS). Zone institutionnelle d'intérêt pour un retest.
-        </p>
-      </div>
+  }
 
-      <div class="pt-4 border-t border-slate-800/60 flex justify-between items-center text-xs text-slate-500">
-        <span>Mis à jour le 02 Nov</span>
-        <div class="flex gap-3">
-          <button class="text-blue-400 hover:underline">Modifier</button>
-          <button class="text-rose-400 hover:underline">Supprimer</button>
+  <!-- MODALE PLEIN ÉCRAN POUR LA FICHE DÉTAILLÉE -->
+  @if (activeModalItem(); as modalItem) {
+    <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        
+        <!-- En-tête de la modale -->
+        <div class="flex justify-between items-center p-6 border-b border-slate-800 bg-slate-900/50">
+          <div class="space-y-1">
+            <span class="text-xs px-2.5 py-1 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase font-semibold">
+              {{ modalItem.category }}
+            </span>
+            <h2 class="text-xl font-bold tracking-tight text-slate-100 mt-1">{{ modalItem.title }}</h2>
+          </div>
+          
+          <button 
+            (click)="closeModal()" 
+            class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-full p-2 transition cursor-pointer">
+            ✕
+          </button>
         </div>
+
+        <!-- Corps de la modale avec texte complet et images intégrées -->
+        <div class="p-6 overflow-y-auto space-y-4 text-sm text-slate-300">
+          @for (block of modalItem.parsedContent; track $index) {
+            @if (block.type === 'text') {
+              <p class="whitespace-pre-line leading-relaxed">{{ block.value }}</p>
+            } @else if (block.type === 'image') {
+              <div class="my-4 flex justify-center">
+                <a [href]="block.value" target="_blank" class="block group relative overflow-hidden rounded-xl border border-slate-800 bg-slate-950">
+                  <img [src]="block.value" alt="Illustration setup" class="max-h-[400px] w-auto object-contain group-hover:scale-[1.01] transition duration-200" />
+                </a>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Pied de page de la modale -->
+        <div class="p-4 border-t border-slate-800 bg-slate-900/50 flex justify-between items-center text-xs text-slate-500">
+          <span>Créé le {{ modalItem.updatedAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+          <button 
+            (click)="closeModal()" 
+            class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium rounded-lg transition cursor-pointer">
+            Fermer
+          </button>
+        </div>
+
       </div>
     </div>
-
-  </div>
+  }
 
 </div>

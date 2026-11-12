@@ -82,6 +82,26 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  async calculateTradingMetrics() {
+  const allTrades = await this.db.trades.toArray();
+  const closedTrades = allTrades.filter(t => t.exitPrice !== null && t.pnl !== undefined);
+  
+  const totalTrades = closedTrades.length;
+  if (totalTrades === 0) return { winRate: 0, profitFactor: 0, totalPnl: 0 };
+
+  const winningTrades = closedTrades.filter(t => (t.pnl ?? 0) > 0);
+  const losingTrades = closedTrades.filter(t => (t.pnl ?? 0) < 0);
+
+  const winRate = (winningTrades.length / totalTrades) * 100;
+  
+  const grossProfit = winningTrades.reduce((acc, t) => acc + (t.pnl ?? 0), 0);
+  const grossLoss = Math.abs(losingTrades.reduce((acc, t) => acc + (t.pnl ?? 0), 0));
+  const profitFactor = grossLoss === 0 ? grossProfit : grossProfit / grossLoss;
+  const totalPnl = grossProfit - grossLoss;
+
+  return { winRate, profitFactor, totalPnl, totalTrades };
+}
+
   toggleIncognito(): void {
     this.isIncognito.update(v => !v);
   }

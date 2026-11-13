@@ -57,6 +57,39 @@
       </button>
     </div>
 
+    <!-- Filtre par Statut (Gagnants / Perdants / En cours) -->
+    <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80 items-center">
+      <span class="text-xs text-slate-400 mr-2">Statut :</span>
+
+      <button (click)="selectedStatus.set('all')" [class.bg-slate-700]="selectedStatus() === 'all'"
+        [class.text-white]="selectedStatus() === 'all'" [class.bg-slate-950]="selectedStatus() !== 'all'"
+        [class.text-slate-400]="selectedStatus() !== 'all'"
+        class="px-3 py-1 rounded-md text-xs font-medium border border-slate-800 transition">
+        Tous
+      </button>
+
+      <button (click)="selectedStatus.set('winning')" [class.bg-emerald-600]="selectedStatus() === 'winning'"
+        [class.text-white]="selectedStatus() === 'winning'" [class.bg-slate-950]="selectedStatus() !== 'winning'"
+        [class.text-slate-400]="selectedStatus() !== 'winning'"
+        class="px-3 py-1 rounded-md text-xs font-medium border border-slate-800 transition">
+        🟢 Gagnants
+      </button>
+
+      <button (click)="selectedStatus.set('losing')" [class.bg-rose-600]="selectedStatus() === 'losing'"
+        [class.text-white]="selectedStatus() === 'losing'" [class.bg-slate-950]="selectedStatus() !== 'losing'"
+        [class.text-slate-400]="selectedStatus() !== 'losing'"
+        class="px-3 py-1 rounded-md text-xs font-medium border border-slate-800 transition">
+        🔴 Perdants
+      </button>
+
+      <button (click)="selectedStatus.set('ongoing')" [class.bg-amber-600]="selectedStatus() === 'ongoing'"
+        [class.text-white]="selectedStatus() === 'ongoing'" [class.bg-slate-950]="selectedStatus() !== 'ongoing'"
+        [class.text-slate-400]="selectedStatus() !== 'ongoing'"
+        class="px-3 py-1 rounded-md text-xs font-medium border border-slate-800 transition">
+        ⏳ En cours
+      </button>
+    </div>
+
   </div>
 
   <!-- Tableau des Trades -->

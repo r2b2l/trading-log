@@ -7,6 +7,9 @@ import { AppDatabase } from '../../services/app-database.service';
 import { Trade, TradeMode } from '../../models/trade.model';
 import { RouterLink } from '@angular/router';
 
+// Définition du type pour le filtre de statut des trades
+type TradeStatusFilter = 'all' | 'winning' | 'losing' | 'ongoing';
+
 @Component({
   selector: 'app-trades-list',
   standalone: true,
@@ -18,6 +21,7 @@ export class TradesListComponent {
 
   // Filtres réactifs
   selectedMode = signal<TradeMode | 'all'>('all');
+  selectedStatus = signal<TradeStatusFilter>('all');
   searchQuery = signal<string>('');
 
   // Récupération réactive en temps réel depuis IndexedDB (Dexie)
@@ -28,12 +32,30 @@ export class TradesListComponent {
   filteredTrades = computed(() => {
     const list = this.trades() ?? [];
     const mode = this.selectedMode();
+    const status = this.selectedStatus();
     const query = this.searchQuery().toLowerCase().trim();
 
     return list.filter((trade: Trade) => {
+      // 1. Filtre par mode
       const matchMode = mode === 'all' || trade.mode === mode;
+      
+      // 2. Filtre par recherche textuelle (Paire)
       const matchQuery = !query || trade.pair.toLowerCase().includes(query);
-      return matchMode && matchQuery;
+
+      // 3. Filtre par statut (Gagnant, Perdant, En cours)
+      let matchStatus = true;
+      const pnl = trade.pnl;
+      const isClosed = pnl !== undefined && pnl !== null;
+
+      if (status === 'winning') {
+        matchStatus = isClosed && pnl > 0;
+      } else if (status === 'losing') {
+        matchStatus = isClosed && pnl < 0;
+      } else if (status === 'ongoing') {
+        matchStatus = !isClosed;
+      }
+
+      return matchMode && matchQuery && matchStatus;
     });
   });
 

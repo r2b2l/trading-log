@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppDatabase } from '../../services/app-database.service';
 import { Trade } from '../../models/trade.model';
@@ -10,22 +10,24 @@ import { Trade } from '../../models/trade.model';
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
-  isIncognito = signal<boolean>(false);
   private db = inject(AppDatabase);
-  private cdr = inject(ChangeDetectorRef);
-
-  // Récupération réactive de tous les trades depuis Dexie sous forme de Signal
-  trades = signal<Trade[]>([]);
-
+  
+  // Signals
+  trades = signal<Trade[]>([]); // Utiliser liveQuery pour obtenir les trades en on-time
+  isIncognito = signal<boolean>(false);
+  
   // Calcul dynamique du PnL global
   totalPnl = computed(() => {
     return this.trades().reduce((acc, trade) => acc + (trade.pnl ?? 0), 0);
   });
+  
+  private closedTrades = computed(() => {
+    return this.trades().filter(t => t.pnl !== undefined && t.pnl !== null);
+  });
 
   // Calcul du taux de réussite (Win Rate) en %
   winRate = computed<number>(() => {
-    const allTrades = this.trades();
-    const closedTrades = allTrades.filter(t => t.pnl !== undefined && t.pnl !== null);
+    const closedTrades = this.closedTrades();
     if (closedTrades.length === 0) return 0;
 
     const winningTrades = closedTrades.filter(t => (t.pnl ?? 0) > 0);
@@ -44,8 +46,7 @@ export class DashboardComponent implements OnInit {
 
   // Calcul du Profit Factor
   profitFactor = computed<number>(() => {
-    const allTrades = this.trades();
-    const closedTrades = allTrades.filter(t => t.pnl !== undefined && t.pnl !== null);
+    const closedTrades = this.closedTrades();
     if (closedTrades.length === 0) return 0;
 
     const totalProfit = closedTrades
@@ -74,33 +75,11 @@ export class DashboardComponent implements OnInit {
   async loadTrades(): Promise<void> {
     try {
       const data = await this.db.getTrades();
-      console.log('Trades chargés depuis Dexie :', data);
       this.trades.set(data);
-      this.cdr.markForCheck();
     } catch (error) {
       console.error('Erreur lors du chargement des trades :', error);
     }
   }
-
-  async calculateTradingMetrics() {
-  const allTrades = await this.db.trades.toArray();
-  const closedTrades = allTrades.filter(t => t.exitPrice !== null && t.pnl !== undefined);
-  
-  const totalTrades = closedTrades.length;
-  if (totalTrades === 0) return { winRate: 0, profitFactor: 0, totalPnl: 0 };
-
-  const winningTrades = closedTrades.filter(t => (t.pnl ?? 0) > 0);
-  const losingTrades = closedTrades.filter(t => (t.pnl ?? 0) < 0);
-
-  const winRate = (winningTrades.length / totalTrades) * 100;
-  
-  const grossProfit = winningTrades.reduce((acc, t) => acc + (t.pnl ?? 0), 0);
-  const grossLoss = Math.abs(losingTrades.reduce((acc, t) => acc + (t.pnl ?? 0), 0));
-  const profitFactor = grossLoss === 0 ? grossProfit : grossProfit / grossLoss;
-  const totalPnl = grossProfit - grossLoss;
-
-  return { winRate, profitFactor, totalPnl, totalTrades };
-}
 
   toggleIncognito(): void {
     this.isIncognito.update(v => !v);

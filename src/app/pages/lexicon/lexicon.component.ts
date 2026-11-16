@@ -28,7 +28,6 @@ export class LexiconComponent implements OnInit, OnDestroy {
 
   // Liste filtrée automatiquement selon le signal selectedCategory
   public filteredItems = computed(() => {
-    console.log('Calcul de filteredItems déclenché');
     const category = this.selectedCategory();
     const allItems = this.items();
     
